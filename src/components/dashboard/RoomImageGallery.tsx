@@ -182,6 +182,7 @@ export function RoomImageGallery({ roomId }: RoomImageGalleryProps) {
                 alt={`Phòng ${img.room_id}`}
                 className="h-full w-full object-cover cursor-zoom-in hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImageUrl(img.image_url)}
+                referrerPolicy="no-referrer"
               />
               <button
                 onClick={() => handleDelete(img.id)}
@@ -207,6 +208,7 @@ export function RoomImageGallery({ roomId }: RoomImageGalleryProps) {
               src={selectedImageUrl}
               alt="Xem ảnh phòng"
               className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              referrerPolicy="no-referrer"
             />
             <button
               onClick={() => setSelectedImageUrl(null)}

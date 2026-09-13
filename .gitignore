@@ -11,3 +11,4 @@ infra/terraform.tfvars
 tsconfig.tsbuildinfo
 src.tar.gz
 test.py
+scratch/

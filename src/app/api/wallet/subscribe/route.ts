@@ -96,15 +96,17 @@ export async function POST(request: NextRequest) {
       newExpiresAt.setMonth(newExpiresAt.getMonth() + durationMonths)
     }
 
-    // 5. Deduct points from wallet (RLS handles update permissions)
-    const { error: walletUpdateError } = await supabase
+    // 5. Deduct points from wallet with optimistic locking to prevent parallel race conditions
+    const { data: updatedWallet, error: walletUpdateError } = await supabase
       .from('wallets')
       .update({ points_balance: currentBalance - totalCostPoints })
       .eq('property_id', propertyId)
+      .eq('points_balance', currentBalance)
+      .select()
 
-    if (walletUpdateError) {
-      console.error('[POST /api/wallet/subscribe] Failed to deduct wallet points:', walletUpdateError)
-      return NextResponse.json({ error: 'Trừ điểm ví thất bại' }, { status: 500 })
+    if (walletUpdateError || !updatedWallet || updatedWallet.length === 0) {
+      console.error('[POST /api/wallet/subscribe] Failed to deduct wallet points or race condition detected:', walletUpdateError)
+      return NextResponse.json({ error: 'Giao dịch bị trùng lặp hoặc số dư đã thay đổi. Vui lòng thử lại.' }, { status: 400 })
     }
 
     // 6. Write debit transaction history log

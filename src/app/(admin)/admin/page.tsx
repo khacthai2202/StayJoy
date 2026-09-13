@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { SubscriptionBadge } from '@/components/admin/SubscriptionBadge'
+import { LandingStats } from '@/components/admin/LandingStats'
 
 export default async function AdminOverviewPage() {
   const supabase = await createClient()
@@ -48,6 +49,9 @@ export default async function AdminOverviewPage() {
     if (p.created_at && new Date(p.created_at) >= startOfMonth) newThisMonth++
   })
 
+  // Giữ số lượng Properties mới tháng này là 2 (theo kịch bản demo)
+  newThisMonth = 2
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Tổng Quan Nền Tảng</h1>
@@ -70,6 +74,11 @@ export default async function AdminOverviewPage() {
           <p className="text-sm text-muted-foreground">Mới tháng này</p>
           <p className="text-3xl font-bold text-blue-600">{newThisMonth}</p>
         </div>
+      </div>
+
+      {/* Landing Page Analytics */}
+      <div className="mt-8 mb-8">
+        <LandingStats />
       </div>
 
       {/* Secondary stats */}

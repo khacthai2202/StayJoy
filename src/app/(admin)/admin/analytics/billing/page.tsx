@@ -411,11 +411,20 @@ export default function AdminBillingAnalyticsPage() {
                       axisLine={false}
                     />
                     <YAxis
+                      yAxisId="left"
                       tickFormatter={formatShortNumber}
                       tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                       tickLine={false}
                       axisLine={false}
                       width={45}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                      tickLine={false}
+                      axisLine={false}
+                      width={40}
                     />
                     <Tooltip
                       formatter={(value: number, name: string) => {
@@ -430,6 +439,7 @@ export default function AdminBillingAnalyticsPage() {
                     />
                     <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
                     <Area
+                      yAxisId="left"
                       type="monotone"
                       dataKey="amountVnd"
                       name="amountVnd"
@@ -439,6 +449,7 @@ export default function AdminBillingAnalyticsPage() {
                       strokeWidth={2}
                     />
                     <Area
+                      yAxisId="right"
                       type="monotone"
                       dataKey="pointsSpent"
                       name="pointsSpent"
@@ -493,13 +504,13 @@ export default function AdminBillingAnalyticsPage() {
                           {formatVND(p.totalVnd)}
                         </td>
                         <td className="px-5 py-3.5 text-right font-mono text-muted-foreground">
-                          {p.totalPointsLoaded.toLocaleString()}đ
+                          {p.totalPointsLoaded.toLocaleString()}
                         </td>
                         <td className="px-5 py-3.5 text-right font-mono text-muted-foreground">
-                          {p.totalPointsSpent.toLocaleString()}đ
+                          {p.totalPointsSpent.toLocaleString()}
                         </td>
                         <td className="px-5 py-3.5 text-right font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                          {p.currentBalance.toLocaleString()}đ
+                          {p.currentBalance.toLocaleString()}
                         </td>
                       </tr>
                     ))

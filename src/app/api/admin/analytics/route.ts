@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { estimateCost } from '@/lib/llm/pricing'
 
 async function getAdminUser(supabase: ReturnType<typeof createClient>) {
@@ -25,9 +26,15 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  // Admin client bypasses RLS to query stats for all properties
+  const adminClient = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     // 1. Fetch properties and their subscription details
-    const { data: properties, error: propError } = await supabase
+    const { data: properties, error: propError } = await adminClient
       .from('properties')
       .select('id, name, plan, expires_at')
 
@@ -56,13 +63,13 @@ export async function GET() {
     }
 
     // 3. Fetch monthly messages for all properties
-    const { data: allMonthlyUsages } = await supabase
+    const { data: allMonthlyUsages } = await adminClient
       .from('monthly_usages')
       .select('property_id, year_month, message_count')
       .in('year_month', monthsList)
 
     // 4. Fetch past 6 months LLM usage logs for ALL properties
-    const { data: logs } = await supabase
+    const { data: logs } = await adminClient
       .from('llm_usage_logs')
       .select('property_id, year_month, model, input_tokens, output_tokens, total_tokens')
       .in('year_month', monthsList)
